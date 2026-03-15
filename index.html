@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Run My Pet · endless green runner</title>
+    <!-- icon: icongame.png (logo) -->
+    <link rel="icon" type="image/png" href="icongame.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --deep-forest: #1f3b2c;
+            --meadow: #5a7f5e;
+            --soft-moss: #7d9f7a;
+            --light-grass: #b8d9b0;
+            --sun-kissed: #e7f0c3;
+            --accent-amber: #c89f68;      /* wood / details */
+            --text-dark: #1e2f23;
+            --border-green: #3f6040;
+        }
+
+        body {
+            background-color: var(--deep-forest);
+            color: var(--sun-kissed);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--light-grass);
+            transition: 0.2s;
+        }
+        a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 35px;
+            background-color: var(--accent-amber);
+            color: #1f3b2c;
+            font-weight: 700;
+            border-radius: 60px;
+            border: none;
+            box-shadow: 0 6px 0 #6d4f2e;
+            cursor: pointer;
+            transition: 0.1s ease;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #6d4f2e;
+            background-color: #dbb47a;
+            text-decoration: none;
+            color: #1f3b2c;
+        }
+
+        /* header */
+        header {
+            background: rgba(26, 48, 34, 0.97);
+            backdrop-filter: blur(5px);
+            border-bottom: 3px solid var(--meadow);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo-img {
+            height: 80px;            /* significantly bigger logo */
+            width: auto;
+            filter: drop-shadow(0 4px 6px #0f2b12);
+            transition: 0.2s;
+        }
+
+        .logo span {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--light-grass);
+            text-shadow: 3px 3px 0 #1f4a2c;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: #ebf5df;
+            padding: 6px 0;
+            border-bottom: 3px solid transparent;
+            font-size: 1.1rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            border-bottom-color: var(--accent-amber);
+            color: white;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 32px;
+            background: none;
+            border: none;
+            color: var(--light-grass);
+        }
+
+        /* HERO */
+        .hero {
+            padding: 40px 0 20px;
+            text-align: center;
+            background: linear-gradient(145deg, #2c5a34, #3f6a47);
+            border-bottom: 8px solid #9fbb7a;
+        }
+
+        .hero-logo {
+            height: clamp(120px, 25vw, 180px);   /* much bigger hero logo */
+            width: auto;
+            margin: 5px auto 10px;
+            background: #578553;
+            border-radius: 40% 60% 50% 50% / 30% 40% 60% 70%;
+            padding: 18px;
+            box-shadow: 0 18px 0 #2d4a27;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 9vw, 5rem);
+            font-weight: 900;
+            color: #fbffe6;
+            text-shadow: 5px 5px 0 #386a38;
+            letter-spacing: 3px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            background: #517a47b3;
+            display: inline-block;
+            padding: 12px 50px;
+            border-radius: 60px;
+            color: #f7ffe1;
+            font-weight: 600;
+            backdrop-filter: blur(3px);
+            margin: 15px auto 30px;
+        }
+
+        /* ----- REVIEW CARDS (the 7 pics, NO stars/quotes) ----- */
+        .review-section {
+            padding: 50px 0 40px;
+            background: #3b6742;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #f3fcd9;
+            text-shadow: 3px 3px 0 #25532d;
+        }
+
+        .section-title p {
+            font-size: 1.3rem;
+            color: #d4efc0;
+        }
+
+        .review-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 40px 0 20px;
+        }
+
+        .review-card {
+            flex: 0 1 auto;
+            width: 150px;               /* compact card for each review pic */
+            background: #628b60;
+            border-radius: 40px 40px 25px 25px;
+            padding: 20px 8px 15px;
+            border: 4px solid var(--light-grass);
+            box-shadow: 0 12px 0 #2b462b;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .review-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 0 #2b462b;
+        }
+
+        .review-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;          /* square review style */
+            object-fit: cover;
+            border-radius: 30% 20% 30% 20%;
+            background: #d5e7c0;
+            border: 4px solid var(--accent-amber);
+        }
+
+        /* NO stars, NO text under images – only the image itself */
+        .review-card p, .review-stars {
+            display: none;
+        }
+
+        .review-note {
+            text-align: center;
+            font-size: 1.4rem;
+            background: #30663e;
+            padding: 14px 25px;
+            border-radius: 60px;
+            max-width: 650px;
+            margin: 30px auto 0;
+            border: 3px dashed #c5b66d;
+        }
+
+        /* Features / green energy */
+        .features {
+            background: #3f6844;
+            padding: 50px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #568b5c;
+            padding: 30px 20px;
+            border-radius: 40px 40px 20px 20px;
+            border: 4px solid #aacf9e;
+            box-shadow: 0 12px 0 #23532d;
+            text-align: center;
+        }
+
+        .feature-icon {
+            background: var(--light-grass);
+            width: 75px;
+            height: 75px;
+            border-radius: 30px 10px 30px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            border: 3px solid #4f7849;
+            color: #1f4525;
+            font-size: 36px;
+        }
+
+        .feature-card h3 {
+            font-size: 2rem;
+            color: #ffffdd;
+            font-weight: 700;
+        }
+
+        /* CREDITS full with clickable LINKS */
+        .credits {
+            background: #2c5433;
+            padding: 50px 0 30px;
+        }
+
+        .credits-box {
+            background: #426d47;
+            border-radius: 60px 60px 25px 25px;
+            padding: 35px 25px;
+            border: 4px solid var(--light-grass);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .credits-box h3 {
+            font-size: 2.3rem;
+            border-left: 12px solid #dbbc7c;
+            padding-left: 20px;
+            margin-bottom: 30px;
+            color: #f9ffd6;
+        }
+
+        .credits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .credit-cat {
+            background: #38653b;
+            padding: 18px;
+            border-radius: 30px;
+            border: 2px solid #9fc780;
+        }
+
+        .credit-cat h4 {
+            font-size: 1.6rem;
+            color: #ffe5a3;
+            border-bottom: 4px dotted #afb77a;
+            margin-bottom: 15px;
+        }
+
+        .credit-cat ul {
+            list-style: none;
+        }
+
+        .credit-cat li {
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #ecffdb;
+            word-break: break-word;
+        }
+
+        .credit-cat i {
+            margin-right: 8px;
+            color: #e4d59b;
+            width: 20px;
+        }
+
+        /* actual links placed exactly as requested */
+        .credit-cat a {
+            color: #ffe68f;
+            text-decoration: underline dotted;
+            font-weight: 500;
+        }
+        .credit-cat a:hover {
+            color: white;
+        }
+
+        /* privacy button */
+        .privacy-wrapper {
+            text-align: center;
+            margin: 40px 0 10px;
+        }
+        .btn-privacy {
+            background-color: #5f7e5a;
+            box-shadow: 0 6px 0 #365236;
+            color: #f0ffda;
+        }
+        .btn-privacy:hover {
+            background-color: #739e6a;
+            color: #fff;
+        }
+
+        /* footer & contact */
+        footer {
+            background: #1d3b24;
+            border-top: 6px solid #5d8b5b;
+            padding: 30px 0 15px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            display: block;
+            margin: 7px 0;
+            color: #cae2b0;
+            font-size: 1.1rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 25px 0 0;
+            color: #9abf8f;
+            border-top: 2px dashed #597d52;
+        }
+
+        .contact-email {
+            font-size: 1.6rem;
+            background: #2f6133;
+            padding: 12px 35px;
+            border-radius: 60px;
+            display: inline-block;
+            border: 3px solid var(--light-grass);
+            margin: 15px 0;
+        }
+
+        /* mobile */
+        @media (max-width: 700px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 85px;
+                left: 0;
+                width: 100%;
+                background: #1f4729;
+                padding: 30px;
+                border-bottom: 5px solid #cbb26a;
+            }
+            .logo span {
+                font-size: 1.7rem;
+            }
+            .logo-img {
+                height: 65px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="icongame.png" alt="Run My Pet logo" class="logo-img" onerror="this.style.display='none'">
+                <span>Run My Pet</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+            <nav class="nav-links" id="navLinks">
+                <a href="#home" class="active">Home</a>
+                <a href="#reviews">Reviews</a>
+                <a href="#credits">Credits</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- HOME / hero -->
+        <section id="home" class="hero">
+            <div class="container">
+                <img src="icongame.png" alt="Run My Pet - big logo" class="hero-logo" onerror="this.style.display='none'">
+                <h1>RUN MY PET</h1>
+                <p>🌿 endless green runner · cactus · drums · friendly animals</p>
+                <div style="margin: 30px 0 10px;">
+                    <a href="#reviews" class="btn"><i class="fa-regular fa-eye"></i> see 7 review pics</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 REVIEW PICS – exactly seven images, no stars, no quotes -->
+        <section id="reviews" class="review-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>🐾 player moments</h2>
+                    <p>1.png → 7.png (no captions, just pure gameplay)</p>
+                </div>
+
+                <div class="review-grid">
+                    <div class="review-card"><img src="1.png" alt="review pic 1" loading="lazy"></div>
+                    <div class="review-card"><img src="2.png" alt="review pic 2" loading="lazy"></div>
+                    <div class="review-card"><img src="3.png" alt="review pic 3" loading="lazy"></div>
+                    <div class="review-card"><img src="4.png" alt="review pic 4" loading="lazy"></div>
+                    <div class="review-card"><img src="5.png" alt="review pic 5" loading="lazy"></div>
+                    <div class="review-card"><img src="6.png" alt="review pic 6" loading="lazy"></div>
+                    <div class="review-card"><img src="7.png" alt="review pic 7" loading="lazy"></div>
+                </div>
+
+                <div class="review-note">
+                    <i class="fa-regular fa-image"></i> seven snapshots from runners
+                </div>
+            </div>
+        </section>
+
+        <!-- small feature highlight (still green) -->
+        <section class="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>🌱 runner features</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-tree"></i></div><h3>cactus / desert</h3><p>slide & jump over obstacles</p></div>
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-drum"></i></div><h3>drums & barrels</h3><p>wooden items from freepik</p></div>
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-dragon"></i></div><h3>ai pet animals</h3><p>donkey, camel, elephant, lion, dino</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CREDITS section with LIVE LINKS for every author / source -->
+        <section id="credits" class="credits">
+            <div class="container">
+                <div class="credits-box">
+                    <h3><i class="fa-regular fa-rectangle-list"></i> 📑 official game credits & attributions</h3>
+                    <div class="credits-grid">
+                        <div class="credit-cat">
+                            <h4>🌄 visual assets</h4>
+                            <ul>
+                                <li><i class="fa-regular fa-image"></i> Environment/Terrains: <strong>Yuliya Pauliukevich</strong> <a href="https://www.vecteezy.com/members/yuliya-pauliukevich" target="_blank">Vecteezy</a>, <strong>upklyak</strong> <a href="https://www.freepik.com/author/upklyak" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Cactus: <strong>Iqbal Hamzah</strong> <a href="https://unsplash.com/@iqbalhamzah" target="_blank">Unsplash</a></li>
+                                <li><i class="fa-regular fa-image"></i> Drums & Boxes: <strong>qalebstudio</strong> <a href="https://www.freepik.com/author/qalebstudio" target="_blank">Freepik</a>, <strong>upklyak</strong> <a href="https://www.freepik.com/author/upklyak" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Barrels & Spears: <strong>djvstock</strong> <a href="https://www.freepik.com/author/djvstock" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Gas Cylinder: <strong>fahad atrafi</strong> <a href="https://www.vecteezy.com/members/fahad-atrafi" target="_blank">Vecteezy</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Rabbit: <strong>brgfxcute</strong> <a href="https://www.freepik.com/author/brgfxcute" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> AI Animals (Donkey, Camel, Elephant, Lion, Dinosaur): Generated via <strong>Google Nano Banana</strong> <a href="https://nanobanana.com" target="_blank">nanobanana.com</a> (placeholder).</li>
+                            </ul>
+                        </div>
+                        <div class="credit-cat">
+                            <h4>🖥️ UI</h4>
+                            <ul>
+                                <li><i class="fa-regular fa-image"></i> Wooden Elements: <strong>macrovector</strong> <a href="https://www.freepik.com/author/macrovector" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Icons & Padlocks: <strong>jcomp</strong> <a href="https://www.freepik.com/author/jcomp" target="_blank">Freepik</a>, <strong>juicy_fish</strong> <a href="https://www.freepik.com/author/juicy-fish" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> UI Packs: <strong>Kenney</strong> <a href="https://www.kenney.nl" target="_blank">www.kenney.nl</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Coins: <strong>jemastock</strong> <a href="https://www.freepik.com/author/jemastock" target="_blank">Freepik</a>.</li>
+                                <li><i class="fa-regular fa-image"></i> Backgrounds: <strong>Yuliya Pauliukevich</strong> <a href="https://www.vecteezy.com/members/yuliya-pauliukevich" target="_blank">Vecteezy</a> and <strong>Kenney</strong> <a href="https://www.kenney.nl" target="_blank">kenney.nl</a>.</li>
+                            </ul>
+                        </div>
+                        <div class="credit-cat">
+                            <h4>🎵 music & sfx</h4>
+                            <ul>
+                                <li><i class="fa-regular fa-music"></i> Music Loops (1,6,7): <strong>xtremefreddy</strong> <a href="https://pixabay.com/users/xtremefreddy-3235565/" target="_blank">Pixabay</a>.</li>
+                                <li><i class="fa-regular fa-music"></i> Coin SFX: <strong>ribhavagrawal</strong> <a href="https://pixabay.com/users/ribhavagrawal-23580339/" target="_blank">Pixabay</a>.</li>
+                                <li><i class="fa-regular fa-music"></i> Game Over SFX: <strong>freesound_community</strong> <a href="https://pixabay.com/users/freesound_community-46691455/" target="_blank">Pixabay</a>.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top:25px; background:#41754b; padding:12px; border-radius:50px; text-align:center;"> All assets used under free license (CC, Pixabay, Freepik, Vecteezy). </p>
+
+                    <!-- PRIVACY POLICY BUTTON (opens privacy-policy.html) -->
+                    <div class="privacy-wrapper">
+                        <a href="privacy-policy.html" class="btn btn-privacy"><i class="fa-regular fa-lock"></i> Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT with updated email -->
+        <section id="contact" style="padding: 45px 0; background: #3c6742; text-align: center;">
+            <div class="container">
+                <h3 style="font-size:2.5rem; color:#e6f7cf;"><i class="fa-regular fa-envelope"></i> talk to the us</h3>
+                <div class="contact-email">
+                    <i class="fa-regular fa-paper-plane"></i> umarhussain24601@gmail.com
+                </div>
+                <p style="margin-top:20px; font-size:1.2rem;">feedback, reviews, or just say hi 🐕</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <img src="icongame.png" style="height:85px; background:#508a51; border-radius:35px; padding:12px;" alt="icongame" onerror="this.style.display='none'">
+                    <p style="margin-top:12px;">🌳 Run My Pet — endless green runner</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">🏡 home</a>
+                    <a href="#reviews">🖼️ reviews (1–7)</a>
+                    <a href="#credits">📜 full credits</a>
+                    <a href="privacy-policy.html">🔏 privacy policy</a>
+                    <a href="#contact">📧 umarhussain24601@gmail.com</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 Run My Pet. all assets credited to artists.</p>
+                <p>🪴 designed for educational + creative play · age 8+</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // mobile menu
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const nav = document.getElementById('navLinks');
+        menuBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nav.classList.toggle('active');
+            menuBtn.innerHTML = nav.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        document.addEventListener('click', (e) => {
+            if (!nav?.contains(e.target) && !menuBtn?.contains(e.target)) {
+                nav?.classList.remove('active');
+                if(menuBtn) menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.getElementById(href.substring(1));
+                if (target) {
+                    window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+                    nav?.classList.remove('active');
+                    if(menuBtn) menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+
+        // active nav highlight
+        window.addEventListener('scroll', ()=>{
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            let current = '';
+            sections.forEach(s => {
+                const top = s.offsetTop - 100;
+                if (scrollY >= top) current = s.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href').substring(1) === current) link.classList.add('active');
+            });
+        });
+
+        // image error fallback (still show something)
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = function() {
+                this.style.background = '#708d62';
+                this.style.minHeight = '100px';
+                this.alt = 'missing ' + this.alt;
+            };
+        });
+    </script>
+</body>
+</html>
